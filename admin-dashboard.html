@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+<!--
+© 2026 WebHubCode
+https://webhubcode.com
+License: MIT
+-->
+
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Admin Dashboard 2026</title>
+<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://www.google.com/search?q=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+<link href="[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap](https://www.google.com/search?q=https://fonts.googleapis.com/css2%3Ffamily%3DInter:wght%40300%3B400%3B500%3B600%3B700%26display%3Dswap)" rel="stylesheet">
+
+<style>
+    /* --- CSS Variables & Theming --- */
+    :root {
+        /* Light Theme */
+        --bg-body: #f3f4f6;
+        --bg-sidebar: #ffffff;
+        --bg-card: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --transition: all 0.3s ease;
+        --sidebar-width: 260px;
+        --header-height: 70px;
+    }
+
+    body.dark-mode {
+        /* Dark Theme */
+        --bg-body: #0f172a;
+        --bg-sidebar: #1e293b;
+        --bg-card: #1e293b;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border-color: #334155;
+        --primary: #6366f1;
+        --primary-hover: #818cf8;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+    }
+
+    /* --- Global Reset --- */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        transition: var(--transition);
+        overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    button { cursor: pointer; border: none; outline: none; background: none; }
+
+    /* --- Layout Structure --- */
+    .wrapper {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* --- Sidebar --- */
+    .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--bg-sidebar);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
+        transition: var(--transition);
+        transform: translateX(0);
+    }
+
+    .sidebar-brand {
+        height: var(--header-height);
+        display: flex;
+        align-items: center;
+        padding: 0 1.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .sidebar-brand i { margin-right: 0.75rem; font-size: 1.5rem; }
+
+    .sidebar-menu {
+        padding: 1.5rem 1rem;
+        flex: 1;
+    }
+
+    .menu-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .menu-link {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        transition: var(--transition);
+    }
+
+    .menu-link i {
+        width: 1.5rem;
+        margin-right: 0.75rem;
+        text-align: center;
+    }
+
+    .menu-link:hover, .menu-link.active {
+        background-color: rgba(79, 70, 229, 0.1);
+        color: var(--primary);
+    }
+
+    .sidebar-footer {
+        padding: 1.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        color: var(--danger);
+        font-weight: 500;
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        transition: var(--transition);
+    }
+    .logout-btn:hover { background-color: rgba(239, 68, 68, 0.1); }
+    .logout-btn i { margin-right: 0.75rem; }
+
+    /* --- Main Content --- */
+    .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        display: flex;
+        flex-direction: column;
+        transition: var(--transition);
+    }
+
+    /* --- Header --- */
+    .header {
+        height: var(--header-height);
+        background-color: var(--bg-sidebar); /* Matches sidebar bg */
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 90;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    
+    .toggle-sidebar-btn {
+        display: none; /* Hidden on desktop */
+        font-size: 1.25rem;
+        color: var(--text-main);
+    }
+
+    .search-box {
+        position: relative;
+        width: 300px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 0.6rem 1rem 0.6rem 2.5rem;
+        border-radius: 99px;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        font-size: 0.9rem;
+        transition: var(--transition);
+    }
+
+    .search-box input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 1.5rem; }
+
+    .theme-toggle, .notification-btn {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        transition: var(--transition);
+        position: relative;
+    }
+
+    .theme-toggle:hover, .notification-btn:hover { color: var(--primary); }
+
+    .badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: var(--danger);
+        color: white;
+        font-size: 0.6rem;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 2px solid var(--bg-sidebar);
+    }
+
+    .user-menu {
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--border-color);
+    }
+
+    .user-info { display: block; }
+    .user-name { font-size: 0.9rem; font-weight: 600; display: block; }
+    .user-role { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* Dropdown */
+    .dropdown-menu {
+        position: absolute;
+        top: 120%;
+        right: 0;
+        width: 180px;
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        box-shadow: var(--shadow-md);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: var(--transition);
+    }
+
+    .user-menu:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .dropdown-item {
+        display: block;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        color: var(--text-main);
+        transition: var(--transition);
+    }
+
+    .dropdown-item:hover { background-color: rgba(0,0,0,0.03); color: var(--primary); }
+
+    /* --- Dashboard Body --- */
+    .content {
+        padding: 2rem;
+        flex: 1;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background-color: var(--bg-card);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+    .stat-info h3 { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 500; }
+    .stat-info p { font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; }
+    
+    .stat-change { font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 0.25rem; }
+    .text-up { color: var(--success); }
+    .text-down { color: var(--danger); }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+    
+    .icon-blue { background-color: rgba(79, 70, 229, 0.1); color: var(--primary); }
+    .icon-green { background-color: rgba(16, 185, 129, 0.1); color: var(--success); }
+    .icon-orange { background-color: rgba(245, 158, 11, 0.1); color: var(--warning); }
+    .icon-red { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+    /* Charts & Tables Section */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .card {
+        background-color: var(--bg-card);
+        border-radius: 1rem;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-header h3 { font-size: 1.1rem; font-weight: 600; }
+    .card-action { color: var(--primary); font-size: 0.9rem; font-weight: 500; cursor: pointer; }
+
+    .card-body { padding: 1.5rem; flex: 1; }
+
+    /* Chart Canvas Placeholder */
+    .chart-container {
+        width: 100%;
+        height: 300px;
+        position: relative;
+    }
+
+    /* Table Styles */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    
+    th {
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+        padding: 1rem 1rem;
+        font-size: 0.9rem;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-main);
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .status-completed { background-color: rgba(16, 185, 129, 0.1); color: var(--success); }
+    .status-pending { background-color: rgba(245, 158, 11, 0.1); color: var(--warning); }
+    .status-cancelled { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+    /* --- Responsive Design --- */
+    @media (max-width: 1024px) {
+        .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+        .sidebar {
+            transform: translateX(-100%);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .sidebar.active { transform: translateX(0); }
+        
+        .main-content { margin-left: 0; }
+        
+        .toggle-sidebar-btn { display: block; }
+        
+        .search-box { display: none; } /* Hide search on mobile to save space */
+        
+        .user-info { display: none; }
+        
+        .content { padding: 1rem; }
+    }
+    
+    /* Utility for chart animation */
+    canvas { display: block; width: 100%; height: 100%; }
+
+</style>
+
+</head>
+<body>
+
+<div class="wrapper">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>AdminUI</span>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="#" class="menu-link active">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Orders</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <button class="toggle-sidebar-btn" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+            </div>
+
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+                
+                <button class="notification-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+
+                <div class="user-menu">
+                    <img src="[https://api.dicebear.com/7.x/avataaars/svg?seed=Alex](https://api.dicebear.com/7.x/avataaars/svg?seed=Alex)" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Alex Morgan</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                    
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item"><i class="fa-regular fa-user" style="margin-right:8px;"></i> Profile</a>
+                        <a href="#" class="dropdown-item"><i class="fa-solid fa-gear" style="margin-right:8px;"></i> Settings</a>
+                        <a href="#" class="dropdown-item" style="color:var(--danger)"><i class="fa-solid fa-arrow-right-from-bracket" style="margin-right:8px;"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total Users</h3>
+                        <p>45,231</p>
+                        <span class="stat-change text-up">
+                            <i class="fa-solid fa-arrow-trend-up"></i> +12.5%
+                        </span>
+                    </div>
+                    <div class="stat-icon icon-blue">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total Revenue</h3>
+                        <p>$128,430</p>
+                        <span class="stat-change text-up">
+                            <i class="fa-solid fa-arrow-trend-up"></i> +8.2%
+                        </span>
+                    </div>
+                    <div class="stat-icon icon-green">
+                        <i class="fa-solid fa-dollar-sign"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>New Orders</h3>
+                        <p>1,203</p>
+                        <span class="stat-change text-down">
+                            <i class="fa-solid fa-arrow-trend-down"></i> -2.4%
+                        </span>
+                    </div>
+                    <div class="stat-icon icon-orange">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Growth Rate</h3>
+                        <p>22.45%</p>
+                        <span class="stat-change text-up">
+                            <i class="fa-solid fa-arrow-trend-up"></i> +4.1%
+                        </span>
+                    </div>
+                    <div class="stat-icon icon-red">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Revenue Overview</h3>
+                        <span class="card-action">Monthly Report <i class="fa-solid fa-chevron-down"></i></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Orders</h3>
+                        <span class="card-action">View All</span>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Premium Plan</td>
+                                        <td>Feb 12</td>
+                                        <td>$120.00</td>
+                                        <td><span class="status-badge status-completed">Paid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Basic License</td>
+                                        <td>Feb 11</td>
+                                        <td>$45.00</td>
+                                        <td><span class="status-badge status-pending">Pending</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Enterprise</td>
+                                        <td>Feb 10</td>
+                                        <td>$950.00</td>
+                                        <td><span class="status-badge status-completed">Paid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Add-on Pack</td>
+                                        <td>Feb 09</td>
+                                        <td>$25.00</td>
+                                        <td><span class="status-badge status-cancelled">Failed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Standard Plan</td>
+                                        <td>Feb 08</td>
+                                        <td>$80.00</td>
+                                        <td><span class="status-badge status-completed">Paid</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // --- DOM Elements ---
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const sidebarToggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const body = document.body;
+    const iconElement = themeToggleBtn.querySelector('i');
+
+    // --- Theme Management ---
+    const savedTheme = localStorage.getItem('theme');
+    
+    // Initial Theme Load
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        iconElement.classList.replace('fa-moon', 'fa-sun');
+    }
+
+    // Toggle Theme
+    themeToggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        
+        // Icon swap
+        if(isDark) {
+            iconElement.classList.replace('fa-moon', 'fa-sun');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            iconElement.classList.replace('fa-sun', 'fa-moon');
+            localStorage.setItem('theme', 'light');
+        }
+        
+        // Redraw chart to update colors
+        drawChart(); 
+    });
+
+    // --- Mobile Sidebar Toggle ---
+    sidebarToggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+            if (!sidebar.contains(e.target) && !sidebarToggleBtn.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        }
+    });
+
+    // --- Canvas Chart (Pure Vanilla JS) ---
+    function drawChart() {
+        const canvas = document.getElementById('revenueChart');
+        const ctx = canvas.getContext('2d');
+        
+        // Resize canvas to parent
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+
+        const width = canvas.width;
+        const height = canvas.height;
+        
+        // Colors based on theme
+        const isDark = body.classList.contains('dark-mode');
+        const gridColor = isDark ? '#334155' : '#e5e7eb';
+        const textColor = isDark ? '#94a3b8' : '#6b7280';
+        const lineColor = '#6366f1'; // Primary color
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+
+        // Padding
+        const padding = 40;
+        const chartWidth = width - padding * 2;
+        const chartHeight = height - padding * 2;
+
+        // Draw Grid Lines (Horizontal)
+        ctx.beginPath();
+        ctx.strokeStyle = gridColor;
+        ctx.lineWidth = 0.5;
+        
+        for (let i = 0; i <= 5; i++) {
+            const y = padding + (chartHeight / 5) * i;
+            ctx.moveTo(padding, y);
+            ctx.lineTo(width - padding, y);
+            
+            // Text labels
+            ctx.fillStyle = textColor;
+            ctx.font = "10px Inter";
+            ctx.fillText(`${100 - i * 20}k`, 5, y + 3);
+        }
+        ctx.stroke();
+
+        // Mock Data Points
+        const dataPoints = [20, 45, 30, 60, 55, 80, 70, 95];
+        const xStep = chartWidth / (dataPoints.length - 1);
+
+        // Create Gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+
+        // Draw Area (Fill)
+        ctx.beginPath();
+        ctx.moveTo(padding, padding + chartHeight - (dataPoints[0]/100 * chartHeight));
+
+        for (let i = 0; i < dataPoints.length; i++) {
+            const x = padding + (i * xStep);
+            const y = padding + chartHeight - (dataPoints[i]/100 * chartHeight);
+            ctx.lineTo(x, y);
+        }
+        ctx.lineTo(width - padding, padding + chartHeight);
+        ctx.lineTo(padding, padding + chartHeight);
+        ctx.closePath();
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // Draw Line
+        ctx.beginPath();
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = 3;
+        ctx.lineJoin = 'round';
+        
+        // Smooth curve simulation (simple Bezier or straight lines)
+        // For simplicity in vanilla JS without complex math, using straight lines with rounded joins
+        // To make it smoother, we could use quadraticCurveTo, but this looks decent.
+        
+        ctx.moveTo(padding, padding + chartHeight - (dataPoints[0]/100 * chartHeight));
+
+        for (let i = 0; i < dataPoints.length; i++) {
+            const x = padding + (i * xStep);
+            const y = padding + chartHeight - (dataPoints[i]/100 * chartHeight);
+            ctx.lineTo(x, y);
+            
+            // Draw point circle
+            // (We do this in a separate loop usually, but here for brevity)
+        }
+        ctx.stroke();
+
+        // Draw dots
+        ctx.fillStyle = isDark ? '#1e293b' : '#ffffff';
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = 2;
+
+        for (let i = 0; i < dataPoints.length; i++) {
+            const x = padding + (i * xStep);
+            const y = padding + chartHeight - (dataPoints[i]/100 * chartHeight);
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+        }
+        
+        // X-Axis Labels (Months)
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'center';
+        
+        for(let i=0; i<months.length; i++) {
+            const x = padding + (i * xStep);
+            ctx.fillText(months[i], x, height - 10);
+        }
+    }
+
+    // Initialize Chart
+    drawChart();
+
+    // Redraw on window resize
+    window.addEventListener('resize', drawChart);
+
+</script>
+
+</body>
+</html>
