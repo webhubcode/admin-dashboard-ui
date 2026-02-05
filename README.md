@@ -18,7 +18,7 @@ A modern, responsive admin dashboard UI built using **HTML**, **CSS**, and **van
 - Pure frontend (no backend, no framework)
 
 ## 🚀 Usage
-Open `admin-dashboard.html` in any modern browser.
+Open `index.html` in any modern browser.
 
 ## 📄 License
 MIT License © 2026 WebHubCode
